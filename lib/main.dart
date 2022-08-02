@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:places_app/screens/places_list_screen.dart';
+import 'package:provider/provider.dart';
+
+import './providers/great_places.dart';
 
 void main() {
   runApp(const MyApp());
@@ -9,32 +13,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Places App'),
-      ),
-      body: const Center(
-        child: Text('Places App'),
+    return ChangeNotifierProvider(
+      create: (context) => GreatPlaces(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Colors.indigo,
+        ),
+        home: const PlacesListScreen(),
       ),
     );
   }
