@@ -21,23 +21,34 @@ class PlacesListScreen extends StatelessWidget {
           )
         ],
       ),
-      body: Consumer<GreatPlaces>(
-        builder: (context, places, child) => places.items.isEmpty
-            ? child!
-            : ListView.builder(
-                itemCount: places.items.length,
-                itemBuilder: (context, index) => ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: FileImage(places.items[index].image),
-                    radius: 50,
+      body: FutureBuilder(
+        future: Provider.of<GreatPlaces>(context, listen: false)
+            .fetchAndSetPlaces(),
+        builder: (context, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? const Center(child: CircularProgressIndicator())
+                : Consumer<GreatPlaces>(
+                    builder: (context, places, child) => places.items.isEmpty
+                        ? child!
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            child: ListView.builder(
+                              itemCount: places.items.length,
+                              itemBuilder: (context, index) => ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage:
+                                      FileImage(places.items[index].image),
+                                  radius: 50,
+                                ),
+                                title: Text(places.items[index].title),
+                                onTap: () {
+                                  // go to details page
+                                },
+                              ),
+                            ),
+                          ),
+                    child: const Center(child: Text('No places added yet!')),
                   ),
-                  title: Text(places.items[index].title),
-                  onTap: () {
-                    // go to details page
-                  },
-                ),
-              ),
-        child: const Text('No places added yet!'),
       ),
     );
   }

@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import '../helpers/db_helper.dart';
 import '../models/place.dart';
 
 class GreatPlaces with ChangeNotifier {
-  final List<Place> _items = [];
+  List<Place> _items = [];
 
   UnmodifiableListView<Place> get items {
     return UnmodifiableListView(_items);
@@ -21,6 +22,28 @@ class GreatPlaces with ChangeNotifier {
     );
 
     _items.add(newPlace);
+
+    notifyListeners();
+
+    DBHelper.insert(DBHelper.tablePlaces, {
+      DBHelper.columnId: newPlace.id,
+      DBHelper.columnTitle: newPlace.title,
+      DBHelper.columnImage: newPlace.image.path,
+    });
+  }
+
+  Future<void> fetchAndSetPlaces() async {
+    final dataList = await DBHelper.getData(DBHelper.tablePlaces);
+    _items = dataList
+        .map(
+          (p) => Place(
+            id: p[DBHelper.columnId],
+            title: p[DBHelper.columnTitle],
+            location: null,
+            image: File(p[DBHelper.columnImage]),
+          ),
+        )
+        .toList();
 
     notifyListeners();
   }
